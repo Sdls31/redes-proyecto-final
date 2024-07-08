@@ -1,0 +1,260 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>replit</title>
+    <link href="style.css" rel="stylesheet" type="text/css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+        rel="stylesheet" />
+    <style>
+        a,
+        p,
+        span,
+        h3 {
+            font-family: "Roboto", sans-serif;
+            color: black;
+        }
+    </style>
+</head>
+
+<body
+    style="margin: 0px; width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+    <header style="
+        display: flex;
+        box-shadow: 0px 10px 10px -5px rgba(0, 0, 0, 0.5);
+        background-color: #f6f5f2;
+        width: 100%;
+        justify-content: center;
+      ">
+        <div style="
+          display: flex;
+          flex-direction: row;
+          width: 100%;
+          justify-content: center;
+          gap: 1rem;
+          padding: 1.25rem;
+        ">
+            <a href="index.html">Home</a>
+            <a href="team.html">Equipo</a>
+        </div>
+    </header>
+    <div class="card"
+        style="display: flex; width: 85%; height: 50px; justify-content: space-between; max-width: 50rem; min-width: 25rem;  margin: 2rem 1rem 0rem 1rem;">
+        <span>Puebla, Puebla <br /><span style="font-style: italic;"> México</span></span>
+
+        <div style="display: flex; gap: 1rem; align-items: center; flex-direction: column;">
+            <span id=" todayDate">Loading...</span>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+                <span class="temp" id="temperatureState"></span>
+                <div style="background-color: #8CA0AB; border-radius: 2px; padding: 5px;">
+                    <span>Celcius</span>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div style="display: flex; justify-content: center; margin-top: 1rem; gap: 1rem; flex-wrap: wrap;">
+        <div class="card">
+            <h3 style="margin: 0 0 10px;">Camara exterior</h3>
+            <div id="images-container-exterior" style="display: flex;">
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin: 0 0 10px;">Camara interior</h3>
+            <div id="images-container-interior" style="display: flex;">
+            </div>
+        </div>
+    </div>
+    <div style="display: flex; width: 100%; justify-content: center; gap: 1rem; padding-top: 2rem; flex-wrap: wrap;">
+        <div class="vento-card"
+            style="display: flex; align-items: center; gap: 1rem; flex-direction: column; padding: 1rem;">
+            <div style="display:flex; width: 100%; justify-content: center;">
+                <img src="assets\puerta-de-salida-abierta.png" />
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem">
+                <div id="doorStatus" style="
+                background-color: red;
+                width: 1rem;
+                border-radius: 2rem;
+                height: 1rem;
+                "></div>
+                <p>Door Sensor</p>
+            </div>
+        </div>
+        <div class="vento-card"
+            style="display: flex; align-items: center; gap: 1rem; flex-direction: column; padding: 1rem;">
+            <div style="display:flex; width: 100%; justify-content: center;">
+                <img src="assets\ventana.png" />
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem">
+                <div id="windowstatus" style="
+                background-color: red;
+                width: 1rem;
+                border-radius: 2rem;
+                height: 1rem;
+                "></div>
+                <p>Window Sensor</p>
+            </div>
+        </div>
+        <div class="vento-card"
+            style="display: flex; align-items: center; gap: 1rem; flex-direction: column; padding: 1rem;">
+            <div style="display:flex; width: 100%; justify-content: center;">
+                <img src="assets\hotel-bell.png" />
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem">
+                <div id="doorBell" style="
+                    background-color: red;
+                    width: 1rem;
+                    border-radius: 2rem;
+                    height: 1rem;
+                "></div>
+                <p>Door Bell</p>
+            </div>
+        </div>
+        <div class="vento-card"
+            style="display: flex; align-items: center; gap: 1rem; flex-direction: column; padding: 1rem;">
+            <div style="display:flex; width: 100%; justify-content: center;">
+                <img src="assets\laser.png" />
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem">
+                <div id="laser" style="
+                    background-color: red;
+                    width: 1rem;
+                    border-radius: 2rem;
+                    height: 1rem;
+                "></div>
+                <p>Laser Sensor</p>
+            </div>
+        </div>
+
+    </div>
+
+
+
+
+    <script>
+        async function fetchImagesInterior() {
+            try {
+                const response = await fetch(
+                    "https://cors.redoc.ly/https://flask-api-esp32.onrender.com/interior"
+                );
+                if (!response.ok) {
+                    throw new Error(
+                        "Network response was not ok " + response.statusText
+                    );
+                }
+                const data = await response.json();
+                const contenedorImagen = document.getElementById("images-container-interior")
+                contenedorImagen.innerHTML = "";
+
+                const img = document.createElement("img");
+                const pos = data.length - 1
+                img.src = data[pos].url
+                img.style.width = "100%"
+                img.style.height = "200px"
+                img.style.borderRadius = "5px"
+                contenedorImagen.appendChild(img)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+        async function fetchImagesExterior() {
+            try {
+                const response = await fetch(
+                    "https://cors.redoc.ly/https://flask-api-esp32.onrender.com/exterior"
+                );
+                if (!response.ok) {
+                    throw new Error(
+                        "Network response was not ok " + response.statusText
+                    );
+                }
+                const data = await response.json();
+                const contenedorImagen = document.getElementById("images-container-exterior")
+                contenedorImagen.innerHTML = "";
+
+                const img = document.createElement("img");
+                const pos = data.length - 1
+                img.src = data[pos].url
+                img.style.width = "100%"
+                img.style.borderRadius = "5px"
+                contenedorImagen.appendChild(img)
+
+            } catch (error) {
+
+            }
+        }
+
+
+
+        async function fetchData() {
+            try {
+                const response = await fetch(
+                    "https://cors.redoc.ly/https://redes-practice.onrender.com/api/state/4",
+                );
+                if (!response.ok) {
+                    throw new Error(
+                        "Network response was not ok " + response.statusText,
+                    );
+                }
+                const data = await response.json();
+                console.log(data)
+                let doorStatusDiv = document.getElementById("doorStatus");
+                let windowStatusDiv = document.getElementById("windowstatus");
+                let temperatureText = document.getElementById("temperatureState");
+                let doorBellDiv = document.getElementById("doorBell");
+                let doorlaserDiv = document.getElementById("laser");
+                data[0].doorstatus === "Open"
+                    ? (doorStatusDiv.style.backgroundColor = "green")
+                    : (doorStatusDiv.style.backgroundColor = "red");
+                data[0].windowstatus === "Open"
+                    ? (windowStatusDiv.style.backgroundColor = "green")
+                    : (windowStatusDiv.style.backgroundColor = "red");
+                data[0].doorbell === "true"
+                    ? (doorBellDiv.style.backgroundColor = "green")
+                    : (doorBellDiv.style.backgroundColor = "red");
+                temperatureText.innerHTML = `${data[0].temperature}°`;
+                data[0].laser === "Seguro"
+                    ? (doorlaserDiv.style.backgroundColor = "green")
+                    : (doorlaserDiv.style.backgroundColor = "red");
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        }
+        function getDate() {
+            let fecha = new Date();
+            let opcionesFecha = {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+            };
+            let fechaFormateada = fecha.toLocaleDateString("es-ES", opcionesFecha);
+            console.log(fechaFormateada);
+            document.getElementById(" todayDate").textContent = fechaFormateada;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchData();
+            setInterval(fetchData, 5000);
+        });
+        document.addEventListener("DOMContentLoaded", getDate);
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchImagesExterior();
+            setInterval(fetchImagesExterior, 5000);
+        });
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchImagesInterior();
+            setInterval(fetchImagesInterior, 5000);
+        });
+    </script>
+</body>
+
+</html>
